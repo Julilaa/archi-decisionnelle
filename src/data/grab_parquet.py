@@ -9,6 +9,10 @@ from bs4 import BeautifulSoup
 
 def main():
     grab_data()
+    grab_latest_data()
+
+# Fonction qui récupère les data sur le site de NYC.gov 
+# Ici uniquement janvier car les téléchargements sont longs
 
 def grab_data() -> None:
     """Récupère les données de New York Yellow Taxi pour janvier 2024
@@ -19,9 +23,9 @@ def grab_data() -> None:
     base_url = "https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page"
     folder_path = os.path.abspath("../../data/raw")  # Utilisation du chemin absolu
     
-    # Création du dossier s'il n'existe pas
-    if not os.path.exists(folder_path):
-        os.makedirs(folder_path)
+    # # Création du dossier s'il n'existe pas
+    # if not os.path.exists(folder_path):
+    #     os.makedirs(folder_path)
 
     # Téléchargement du contenu de la page
     print("Récupération du lien de téléchargement pour janvier 2024...")
@@ -62,25 +66,24 @@ def grab_data() -> None:
         print(f"{file_name} téléchargé avec succès.")
     except Exception as e:
         print(f"Échec du téléchargement de {file_name} : {e}")
-    
+
+# # Fonction qui récupère toutes les data de tous les mois de l'année 2024
+
 # def grab_data() -> None:
-#     """Grab the data from New York Yellow Taxi
+#     """Récupère les données de New York Yellow Taxi pour tous les mois de 2024
 
-#     This method download x files of the New York Yellow Taxi. 
-    
-#     Files need to be saved into "../../data/raw" folder
-#     This methods takes no arguments and returns nothing.
+#     Cette méthode télécharge les fichiers des trajets des Yellow Taxi au format Parquet pour tous les mois de l'année 2024.
+#     Les fichiers sont enregistrés dans le dossier "../../data/raw".
 #     """
-
 #     base_url = "https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page"
-#     folder_path = "../../data/raw"
-    
+#     folder_path = os.path.abspath("../../data/raw")  # Utilisation du chemin absolu
+
 #     # Création du dossier s'il n'existe pas
 #     if not os.path.exists(folder_path):
 #         os.makedirs(folder_path)
-    
+
 #     # Téléchargement du contenu de la page
-#     print("Récupération des liens de téléchargement depuis la page principale...")
+#     print("Récupération des liens de téléchargement pour les mois de l'année 2024...")
 #     try:
 #         with urllib.request.urlopen(base_url) as response:
 #             page_content = response.read()
@@ -92,25 +95,79 @@ def grab_data() -> None:
 #     soup = BeautifulSoup(page_content, 'html.parser')
 #     pattern = re.compile(r'yellow_tripdata_2024-\d{2}\.parquet')
 
-#     # Trouver tous les liens de fichiers Parquet pour 2024
+#     # Trouver tous les liens des fichiers Parquet pour 2024
 #     links = [a['href'] for a in soup.find_all('a', href=True) if pattern.search(a['href'])]
-    
+
 #     if not links:
 #         print("Aucun fichier Parquet trouvé pour l'année 2024.")
 #         return
 
-#     # Téléchargement des fichiers
+#     # Téléchargement de chaque fichier trouvé
 #     for link in links:
 #         file_name = link.split('/')[-1]
 #         file_path = os.path.join(folder_path, file_name)
 
-#         # Télécharger le fichier
 #         print(f"Téléchargement de {file_name}...")
 #         try:
 #             urllib.request.urlretrieve(link, file_path)
 #             print(f"{file_name} téléchargé avec succès.")
 #         except Exception as e:
 #             print(f"Échec du téléchargement de {file_name} : {e}")
+
+# Fonction qui récupère uniquement les données du dernier mois (les plus récentes)
+
+def grab_latest_data() -> None:
+    """Récupère les données de New York Yellow Taxi pour le mois le plus récent disponible
+
+    Cette méthode télécharge le fichier des trajets des Yellow Taxi du mois le plus récent au format Parquet.
+    Le fichier est enregistré dans le dossier "../../data/raw".
+    """
+    base_url = "https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page"
+    folder_path = os.path.abspath("../../data/raw")  # Utilisation du chemin absolu
+
+    # # Création du dossier s'il n'existe pas
+    # if not os.path.exists(folder_path):
+    #     os.makedirs(folder_path)
+
+    # Téléchargement du contenu de la page
+    print("Récupération du lien de téléchargement pour le mois le plus récent...")
+    try:
+        with urllib.request.urlopen(base_url) as response:
+            page_content = response.read()
+    except Exception as e:
+        print(f"Erreur lors du téléchargement de la page principale : {e}")
+        return
+
+    # Parsing du contenu de la page avec BeautifulSoup
+    soup = BeautifulSoup(page_content, 'html.parser')
+    pattern = re.compile(r'yellow_tripdata_\d{4}-\d{2}\.parquet')
+
+    # Trouver tous les liens des fichiers Parquet
+    links = [a['href'] for a in soup.find_all('a', href=True) if pattern.search(a['href'])]
+
+    if not links:
+        print("Aucun fichier Parquet trouvé.")
+        return
+
+    # Trier les liens pour trouver le plus récent (basé sur l'année et le mois dans le nom du fichier)
+    links.sort(reverse=True)
+    latest_link = links[0]  # Le plus récent
+
+    # Affiche le lien du fichier téléchargé
+    print("Lien du fichier le plus récent :", latest_link)
+    print("Chemin du dossier de destination :", folder_path)
+
+    # Télécharger le fichier
+    file_name = latest_link.split('/')[-1]
+    file_path = os.path.join(folder_path, file_name)
+
+    print("Chemin complet du fichier :", file_path)
+    print(f"Téléchargement de {file_name}...")
+    try:
+        urllib.request.urlretrieve(latest_link, file_path)
+        print(f"{file_name} téléchargé avec succès.")
+    except Exception as e:
+        print(f"Échec du téléchargement de {file_name} : {e}")
 
 
 def write_data_minio():
