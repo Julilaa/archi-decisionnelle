@@ -17,7 +17,7 @@ def grab_data() -> None:
     Le fichier est enregistré dans le dossier "../../data/raw".
     """
     base_url = "https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page"
-    folder_path = "../data/raw"
+    folder_path = "../../data/raw"
     
     # Téléchargement du contenu de la page
     print("Récupération du lien de téléchargement pour janvier 2024...")
@@ -38,6 +38,9 @@ def grab_data() -> None:
         if pattern.search(a['href']):
             link = a['href']
             break
+    
+    #Affiche le lien du fichier téléchargé
+    print (link)
     
     if not link:
         print("Le fichier Parquet pour janvier 2024 n'a pas été trouvé.")
