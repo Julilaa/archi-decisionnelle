@@ -4,7 +4,7 @@ ATL-Datamart Version Python
 Projet pour : 
 * Cours d'atelier Architecture décisionnel Datamart (TRDE704) pour les I1 de l'EPSI Paris et Arras.
 
-Le sujet est à disposition dans le dossier docs ET le sujet à jour dans votre espace learning.
+Le sujet est à disposition dans le dossier docs ET le sujet à jour dans votre espace learning. 
 
 ## Comment utiliser ce template ?
 *  Pour le TP 1 :
