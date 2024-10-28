@@ -17,8 +17,12 @@ def grab_data() -> None:
     Le fichier est enregistré dans le dossier "../../data/raw".
     """
     base_url = "https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page"
-    folder_path = "../../data/raw"
+    folder_path = os.path.abspath("../../data/raw")  # Utilisation du chemin absolu
     
+    # Création du dossier s'il n'existe pas
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
+
     # Téléchargement du contenu de la page
     print("Récupération du lien de téléchargement pour janvier 2024...")
     try:
@@ -39,8 +43,9 @@ def grab_data() -> None:
             link = a['href']
             break
     
-    #Affiche le lien du fichier téléchargé
-    print (link)
+    # Affiche le lien du fichier téléchargé
+    print("Lien du fichier :", link)
+    print("Chemin du dossier de destination :", folder_path)
     
     if not link:
         print("Le fichier Parquet pour janvier 2024 n'a pas été trouvé.")
@@ -50,6 +55,7 @@ def grab_data() -> None:
     file_name = link.split('/')[-1]
     file_path = os.path.join(folder_path, file_name)
 
+    print("Chemin complet du fichier :", file_path)
     print(f"Téléchargement de {file_name}...")
     try:
         urllib.request.urlretrieve(link, file_path)
