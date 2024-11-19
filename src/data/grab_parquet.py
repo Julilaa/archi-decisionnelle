@@ -10,6 +10,7 @@ from bs4 import BeautifulSoup
 def main():
     grab_data()
     grab_latest_data()
+    write_data_minio()
 
 # Fonction qui récupère les data sur le site de NYC.gov 
 # Ici uniquement janvier car les téléchargements sont longs
