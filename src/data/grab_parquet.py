@@ -184,7 +184,7 @@ def write_data_minio():
         access_key="minio",
         secret_key="minio123"
     )
-    bucket: str = "NOM_DU_BUCKET_ICI"
+    bucket: str = "bubule"
     found = client.bucket_exists(bucket)
     if not found:
         client.make_bucket(bucket)
