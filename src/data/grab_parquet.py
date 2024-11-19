@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup
 def main():
     grab_data()
     grab_latest_data()
-    write_data_minio()
+    #write_data_minio()
 
 # Fonction qui récupère les data sur le site de NYC.gov 
 # Ici uniquement janvier car les téléchargements sont longs
@@ -22,7 +22,8 @@ def grab_data() -> None:
     Le fichier est enregistré dans le dossier "../../data/raw".
     """
     base_url = "https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page"
-    folder_path = os.path.abspath("../../data/raw")  # Utilisation du chemin absolu
+    #folder_path = os.path.abspath("../../data/raw")  # Utilisation du chemin absolu
+    folder_path = "C:/EPSI/M1/Archi décisionnelle/archi-decisionnelle/data/raw"
     
     # # Création du dossier s'il n'existe pas
     # if not os.path.exists(folder_path):
@@ -124,7 +125,8 @@ def grab_latest_data() -> None:
     Le fichier est enregistré dans le dossier "../../data/raw".
     """
     base_url = "https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page"
-    folder_path = os.path.abspath("../../data/raw")  # Utilisation du chemin absolu
+    #folder_path = os.path.abspath("../../data/raw")  # Utilisation du chemin absolu
+    folder_path = "C:/EPSI/M1/Archi décisionnelle/archi-decisionnelle/data/raw"
 
     # # Création du dossier s'il n'existe pas
     # if not os.path.exists(folder_path):
