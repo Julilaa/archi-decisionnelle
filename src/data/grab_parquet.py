@@ -6,11 +6,13 @@ import os
 import urllib.request
 import re
 from bs4 import BeautifulSoup
+from minio import Minio
+from minio.error import S3Error
 
 def main():
     grab_data()
     grab_latest_data()
-    #write_data_minio()
+    write_data_minio()
 
 # Fonction qui récupère les data sur le site de NYC.gov 
 # Ici uniquement janvier car les téléchargements sont longs
@@ -188,8 +190,28 @@ def write_data_minio():
     found = client.bucket_exists(bucket)
     if not found:
         client.make_bucket(bucket)
+        print(f"Bucket" + bucket +  "créé avec succès.")
     else:
         print("Bucket " + bucket + " existe déjà")
+
+    # Chemin du dossier local
+    folder_path = "C:/EPSI/M1/Archi décisionnelle/archi-decisionnelle/data/raw"
+
+    # Parcours des fichiers dans le dossier
+    for root, dirs, files in os.walk(folder_path):
+        for file in files:
+            file_path = os.path.join(root, file)
+            object_name = os.path.relpath(file_path, folder_path)  # Chemin relatif pour Minio
+            try:
+                # Envoi du fichier à Minio
+                client.fput_object(
+                    bucket_name=bucket,
+                    object_name=object_name,
+                    file_path=file_path,
+                )
+                print(f"Fichier '{file_path}' uploadé sous '{object_name}' dans le bucket '{bucket}'.")
+            except S3Error as e:
+                print(f"Erreur lors de l'upload de '{file_path}': {e}")
 
 if __name__ == '__main__':
     sys.exit(main())
