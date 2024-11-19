@@ -10,8 +10,8 @@ from minio import Minio
 from minio.error import S3Error
 
 def main():
-    grab_data()
-    grab_latest_data()
+    #grab_data()
+    #grab_latest_data()
     write_data_minio()
 
 # Fonction qui récupère les data sur le site de NYC.gov 
